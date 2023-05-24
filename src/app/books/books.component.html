@@ -1,0 +1,100 @@
+<div class="fs">
+  <select
+    class="first-select"
+    [(ngModel)]="status"
+    name="status"
+    [value]="status"
+  >
+    <option value="" disabled selected>Select An Option</option>
+    <option value="3">Issued books</option>
+    <option value="2">All books</option>
+    <option value="1">Available books</option>
+    <option value="0">Unavailable books</option>
+  </select>
+</div>
+
+<div class="ms">
+  <table>
+    <thead *ngIf="status != '3'">
+      <tr>
+        <th>ID</th>
+        <th>TITLE</th>
+        <th>AUTHOR</th>
+        <th>CATEGORY</th>
+        <th>TAGS</th>
+        <th *ngIf="status == '2'">STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of books">
+        <ng-container *ngIf="status == '2'">
+          <td>{{ item.id }}</td>
+          <td>{{ item.title }}</td>
+          <td>{{ item.author }}</td>
+          <td>{{ item.Category }}</td>
+          <td>{{ item.Tags }}</td>
+          <td *ngIf="item.status == 0">Available</td>
+          <td *ngIf="item.status == 1">Not Available</td>
+        </ng-container>
+
+        <ng-container *ngIf="status == '1' && item.status == 0">
+          <td>{{ item.id }}</td>
+          <td>{{ item.title }}</td>
+          <td>{{ item.author }}</td>
+          <td>{{ item.Category }}</td>
+          <td>{{ item.Tags }}</td>
+        </ng-container>
+
+        <ng-container *ngIf="status == '0' && item.status == 1">
+          <td>{{ item.id }}</td>
+          <td>{{ item.title }}</td>
+          <td>{{ item.author }}</td>
+          <td>{{ item.Category }}</td>
+          <td>{{ item.Tags }}</td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+
+  <table *ngIf="status == '3'">
+    <thead>
+      <th>Title</th>
+      <th>Issuer Name</th>
+      <th>Issue Date</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let book of bookData">
+        <td>{{ book.book }}</td>
+        <td>{{ book.name }}</td>
+        <td>{{ book.date }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form" *ngIf="status == '1'">
+  <form action="" class="booked" (ngSubmit)="getting()" [formGroup]="bookForm">
+    <label>Book Name</label>
+    <select
+      [(ngModel)]="selectedOption"
+      (ngModelChange)="onOptionSelected($event)"
+      class="bookSelect"
+      formControlName="book"
+    >
+      <option [value]="1" disabled selected>Select a Book</option>
+      <option [value]="items.title" *ngFor="let items of availableBook">
+        {{ items.title }}
+      </option>
+    </select>
+    <label>User Name</label>
+    <input
+      type="text"
+      placeholder="User Name"
+      formControlName="name"
+      [(ngModel)]="input1"
+    />
+    <label>Select Date</label>
+    <input type="date" formControlName="date" [(ngModel)]="input2" />
+    <button class="btn" type="submit" [disabled]="bookForm.invalid">Add</button>
+  </form>
+</div>
